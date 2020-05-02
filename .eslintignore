@@ -1,0 +1,7 @@
+# /src/**/stories.js
+src/serviceWorker.js
+scripts/generateLocales.js
+# scripts/*.test.js
+**/__deprecated__/**/*.js
+*.d.ts
+*.tsx

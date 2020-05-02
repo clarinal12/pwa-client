@@ -1,26 +1,35 @@
 import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import { ApolloProvider } from 'react-apollo';
+import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
+import { ProgressCircular } from 'react-onsenui';
+import { ProvideAuth } from 'hooks/useAuth';
+import 'onsenui/css/onsenui.css';
+import 'styles/tailwind.css';
+import 'styles/themes/default.css';
+import Authentication from './pages/Authentication';
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+interface IAppProps {
+  client: any;
+  loading: boolean;
 }
+
+const App: React.FC<IAppProps> = ({ client, loading }) => {
+  if (loading)
+    return (
+      <div className="h-screen w-screen flex items-center justify-center">
+        <ProgressCircular indeterminate />
+      </div>
+    );
+
+  return (
+    <ApolloHooksProvider client={client}>
+      <ApolloProvider client={client}>
+        <ProvideAuth client={client}>
+          <Authentication />
+        </ProvideAuth>
+      </ApolloProvider>
+    </ApolloHooksProvider>
+  );
+};
 
 export default App;
