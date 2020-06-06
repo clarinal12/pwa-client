@@ -40,7 +40,7 @@ const LoginForm = () => {
     enableReinitialize: true,
   });
 
-  const { handleSubmit, handleChange } = formik;
+  const { handleSubmit, handleChange, values } = formik;
 
   return (
     <div>
@@ -67,6 +67,7 @@ const LoginForm = () => {
         <h1>Login</h1>
         <Input
           float
+          value={values.username}
           onChange={handleChange}
           placeholder="Username"
           name="username"
@@ -75,6 +76,7 @@ const LoginForm = () => {
         />
         <Input
           float
+          value={values.password}
           onChange={handleChange}
           placeholder="Password"
           type="password"

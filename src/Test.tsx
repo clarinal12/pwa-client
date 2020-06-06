@@ -1,14 +1,8 @@
 import React from 'react';
+import { Navigator, Button } from 'react-onsenui';
 import usePushNotifications from 'hooks/usePushNotifications';
-import { Button } from 'react-onsenui';
 
-const Navigation = () => {
-  const renderPage = (route: any, navigator: any) => {
-    const props = route.props || {};
-
-    return React.createElement(route.component, { ...props, navigator });
-  };
-
+const Test = () => {
   const {
     userConsent,
     pushNotificationSupported,
@@ -47,25 +41,23 @@ const Navigation = () => {
         your device.
       </p>
       <p>
-        User consent to recevie push notificaitons is{' '}
+        User consent to receive push notifications is{' '}
         <strong>{userConsent}</strong>.
       </p>
-      <div className="mt-5">
-        <Button onClick={() => onClickAskUserPermission()}>
-          Ask user permission
-        </Button>{' '}
-        <Button onClick={() => onClickSubscribeToPushNotification()}>
-          Create Notification subscription
-        </Button>{' '}
-        <Button onClick={() => onClickSendSubscriptionToPushServer()}>
-          Send subscription to push server
-        </Button>{' '}
-        <Button onClick={() => onClickSendNotification()}>
-          Send a notification
-        </Button>
-      </div>
+      <button onClick={() => onClickAskUserPermission()}>
+        Ask user permission
+      </button>
+      <button onClick={() => onClickSubscribeToPushNotification()}>
+        Create Notification subscription
+      </button>
+      <button onClick={() => onClickSendSubscriptionToPushServer()}>
+        Send subscription to push server
+      </button>
+      <button onClick={() => onClickSendNotification()}>
+        Send a notification
+      </button>
     </div>
   );
 };
 
-export default Navigation;
+export default Test;

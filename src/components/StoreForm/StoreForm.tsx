@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Input, Button, AlertDialog } from 'react-onsenui';
 import { useFormik } from 'formik';
-import { ADD_STORE } from 'mutations/store';
+import { ADD_STORE, UPDATE_STORE } from 'mutations/store';
 import { useMutation } from '@apollo/react-hooks';
 import { addStoreSchema } from './addStoreSchema';
 import { STORES } from 'queries/stores';
@@ -18,7 +18,7 @@ const StoreForm: React.FC<IStoreFormProps> = ({ onSuccess, initialValues }) => {
     message: '',
   });
 
-  const [addStore, { loading }] = useMutation(ADD_STORE, {
+  const [addStore, { loading: addStoreLoading }] = useMutation(ADD_STORE, {
     onCompleted: (res) => {
       onSuccess(res);
     },
@@ -33,19 +33,76 @@ const StoreForm: React.FC<IStoreFormProps> = ({ onSuccess, initialValues }) => {
     refetchQueries: [{ query: STORES }],
   });
 
+  const [updateStore, { loading: updateStoreLoading }] = useMutation(
+    UPDATE_STORE,
+    {
+      onCompleted: (res) => {
+        onSuccess(res);
+      },
+      onError: (err) => {
+        const { message } = err;
+        toggleAlert({
+          open: true,
+          title: 'Update Store Error',
+          message,
+        });
+      },
+      refetchQueries: [{ query: STORES }],
+      context: {
+        serializationKey: 'ADD_STORE',
+      },
+    }
+  );
+
+  const handleAddStore = (values: { description: string; address: string }) => {
+    const { description, address } = values;
+    addStore({
+      variables: { description, address },
+      optimisticResponse: {
+        addStore: {
+          id: 0,
+          description,
+          address,
+          __typename: 'Store',
+        },
+      },
+      update: (cache, { data }) => {
+        const { addStore } = data;
+        const newData: any = cache.readQuery({ query: STORES });
+        newData.listStore.data.push({
+          ...addStore,
+        });
+        cache.writeQuery({ query: STORES, data: newData });
+        onSuccess(data);
+      },
+    });
+  };
+
   const formik = useFormik({
-    initialValues: { description: '', address: '', ...initialValues },
-    onSubmit: (values) => {
-      const { description, address }: any = values;
-      addStore({
-        variables: { description, address },
-      });
+    initialValues: {
+      description: '',
+      address: '',
+      ...initialValues,
+    },
+    onSubmit: (values: {
+      description: string;
+      address: string;
+      id?: number;
+    }) => {
+      const { description, address, id } = values;
+      if (id) {
+        updateStore({
+          variables: { id, description, address },
+        });
+      } else {
+        handleAddStore(values);
+      }
     },
     validationSchema: addStoreSchema,
     enableReinitialize: true,
   });
 
-  const { handleSubmit, handleChange } = formik;
+  const { handleSubmit, handleChange, values } = formik;
 
   return (
     <div>
@@ -71,6 +128,7 @@ const StoreForm: React.FC<IStoreFormProps> = ({ onSuccess, initialValues }) => {
       <form>
         <Input
           float
+          value={values.description}
           onChange={handleChange}
           placeholder="Description"
           name="description"
@@ -79,6 +137,7 @@ const StoreForm: React.FC<IStoreFormProps> = ({ onSuccess, initialValues }) => {
         />
         <Input
           float
+          value={values.address}
           onChange={handleChange}
           placeholder="Address"
           name="address"
@@ -88,10 +147,10 @@ const StoreForm: React.FC<IStoreFormProps> = ({ onSuccess, initialValues }) => {
         <div className="mt-6 w-full text-right">
           <Button
             className="w-full text-center"
-            disabled={loading}
+            disabled={addStoreLoading || updateStoreLoading}
             onClick={() => handleSubmit()}
           >
-            {loading ? 'Submitting...' : 'Submit'}
+            {addStoreLoading || updateStoreLoading ? 'Submitting...' : 'Submit'}
           </Button>
         </div>
       </form>

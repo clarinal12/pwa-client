@@ -11,3 +11,15 @@ export const STORES = gql`
     }
   }
 `;
+
+export const STORE = gql`
+  query ListStore {
+    listStore {
+      data {
+        id
+        description
+        address
+      }
+    }
+  }
+`;
