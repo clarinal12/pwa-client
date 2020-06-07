@@ -1,1 +1,1 @@
-/graphql/*   http://dev.el-ar.tk  200
+/graphql/*   http://dev.el-ar.tk/:splat  200
