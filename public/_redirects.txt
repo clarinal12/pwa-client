@@ -1,1 +1,1 @@
-/graphql            https://www.petsofnetlify.com
+/graphql            http://dev.el-ar.tk
