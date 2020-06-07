@@ -1,0 +1,6 @@
+[[redirects]]
+  from = "/graphql"
+  to = "http://dev.el-ar.tk"
+  status = 200
+  force = true
+  headers = {X-From = "Netlify"}
