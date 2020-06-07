@@ -6,7 +6,7 @@ import { IStore } from 'interfaces/stores';
 
 const StoresList = () => {
   const { data = {}, loading, error } = useQuery(STORES, {
-    fetchPolicy: 'network-only',
+    fetchPolicy: 'cache-and-network',
   });
 
   const { listStore = {} }: any = data;
