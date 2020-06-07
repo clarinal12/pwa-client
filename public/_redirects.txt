@@ -1,1 +1,1 @@
-/graphql            http://dev.el-ar.tk
+/graphql/*   http://dev.el-ar.tk  200
