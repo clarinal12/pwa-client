@@ -15,7 +15,6 @@ function post(path, body) {
       return response.json();
     })
     .then(function (data) {
-      console.log({ data });
       return data;
     });
 }

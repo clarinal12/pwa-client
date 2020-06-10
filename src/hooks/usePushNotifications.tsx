@@ -99,10 +99,7 @@ export default function usePushNotifications() {
     setLoading(true);
     setError(false);
     http
-      .post(
-        'https://push-notification-demo-server.herokuapp.com/subscription',
-        userSubscription
-      )
+      .post('/subscription', userSubscription)
       .then(function (response) {
         console.log({ response });
         setPushServerSubscriptionId(response.id);
