@@ -8,4 +8,11 @@ module.exports = function proxy(app) {
       changeOrigin: true,
     })
   );
+  app.use(
+    '/subscription',
+    createProxyMiddleware({
+      target: 'https://push-notification-demo-server.herokuapp.com',
+      changeOrigin: true,
+    })
+  );
 };

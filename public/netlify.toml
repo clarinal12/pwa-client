@@ -3,3 +3,9 @@
   to = "http://dev.el-ar.tk/graphql"
   status = 200
   force = true
+
+ [[redirects]]
+  from = "/subscription"
+  to = "https://push-notification-demo-server.herokuapp.com/subscription/:splat"
+  status = 200
+  force = true

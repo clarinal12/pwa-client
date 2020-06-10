@@ -9,3 +9,13 @@ export const ADD_STORE = gql`
     }
   }
 `;
+
+export const UPDATE_STORE = gql`
+  mutation UpdateStore($id: Int!, $description: String, $address: String) {
+    updateStore(id: $id, description: $description, address: $address) {
+      id
+      description
+      address
+    }
+  }
+`;

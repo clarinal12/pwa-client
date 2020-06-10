@@ -2,11 +2,11 @@ import React from 'react';
 import { Tab, Page, Tabbar } from 'react-onsenui';
 import { tabSections } from '../../nav-list';
 
-interface IStoresProps {
+interface IMainProps {
   navigator: any;
 }
 
-const Stores: React.FC<IStoresProps> = ({ navigator }) => {
+const Main: React.FC<IMainProps> = ({ navigator }) => {
   const renderTabs = () => {
     return tabSections.map((section, key) => {
       return {
@@ -29,4 +29,4 @@ const Stores: React.FC<IStoresProps> = ({ navigator }) => {
   );
 };
 
-export default Stores;
+export default Main;
