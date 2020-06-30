@@ -3,20 +3,18 @@ function receivePushNotification(event) {
   console.log('[Service Worker] Push Received.', event);
 
   const {
-    image = 'https://via.placeholder.com/128/ff0000',
-    tag = 'my-tag',
-    url = 'https://developers.google.com/web/fundamentals/push-notifications/display-a-notification#icon',
-    title = 'Notification Title',
-    text = 'Notification Body Text',
+    tag,
+    // image, url, title, text
   } = event.data.json();
 
   const options = {
-    data: url,
-    body: text,
-    icon: image,
+    data:
+      'https://developers.google.com/web/fundamentals/push-notifications/display-a-notification#icon',
+    body: 'Notification Body Text',
+    icon: 'https://via.placeholder.com/128/ff0000',
     vibrate: [200, 100, 200],
     tag,
-    image,
+    // image,
     badge: 'https://via.placeholder.com/128/ff0000',
     actions: [
       {
