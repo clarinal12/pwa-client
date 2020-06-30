@@ -17,7 +17,7 @@ const Accounts: React.FC<IAccountsProps> = ({ title, navigator }) => {
     onClickAskUserPermission,
     onClickSubscribeToPushNotification,
     onClickSendSubscriptionToPushServer,
-    onClickSendNotification,
+    // onClickSendNotification,
     error,
     loading,
   } = usePushNotifications();
@@ -31,8 +31,6 @@ const Accounts: React.FC<IAccountsProps> = ({ title, navigator }) => {
       )}
     >
       <div className="content" style={{ padding: 20 }}>
-        <h1>Accounts Screen</h1>
-        <Button onClick={() => signOut()}>Logout</Button>
         <div className="mt-5">
           {error && (
             <section className="app-error">
@@ -42,30 +40,34 @@ const Accounts: React.FC<IAccountsProps> = ({ title, navigator }) => {
             </section>
           )}
           {loading && 'Loading, please stand by'}
+          <br></br>
           <p>
             Push notification are {!pushNotificationSupported && 'NOT'}{' '}
             supported by your device.
           </p>
+          <br></br>
           <p>
             User consent to recevie push notificaitons is{' '}
             <strong>{userConsent}</strong>.
           </p>
+          <br></br>
           <div className="mt-5">
             <Button onClick={() => onClickAskUserPermission()}>
               Ask user permission
             </Button>
             <br></br> <br></br>
             <Button onClick={() => onClickSubscribeToPushNotification()}>
-              Create Notification subscription
+              Create notification subscription
             </Button>
             <br></br> <br></br>
             <Button onClick={() => onClickSendSubscriptionToPushServer()}>
               Send subscription to push server
             </Button>
             <br></br> <br></br>
-            <Button onClick={() => onClickSendNotification()}>
+            {/* <Button onClick={() => onClickSendNotification()}>
               Send a notification
-            </Button>
+            </Button> */}
+            <Button onClick={() => signOut()}>Logout</Button>
           </div>
         </div>
       </div>

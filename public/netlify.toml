@@ -5,7 +5,7 @@
   force = true
 
  [[redirects]]
-  from = "/subscription/*"
-  to = "https://push-notification-demo-server.herokuapp.com/subscription/:splat"
+  from = "/subscription"
+  to = "https://push-notification-demo-server.herokuapp.com/subscription"
   status = 200
   force = true
