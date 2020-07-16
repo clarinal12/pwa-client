@@ -14,41 +14,9 @@ const isPushNotificationSupported = () => {
 const askUserPermission = async () => {
   return await Notification.requestPermission();
 };
-/**
- * shows a notification
- */
-const sendNotification = () => {
-  const img = '/logo192.png';
-  const text = 'Take a look at this brand new t-shirt!';
-  const title = 'New Product Available';
-  const options = {
-    body: text,
-    icon: '/logo192.png',
-    vibrate: [200, 100, 200],
-    tag: 'new-product',
-    image: img,
-    badge: 'https://spyna.it/icons/android-icon-192x192.png',
-    actions: [
-      {
-        action: 'Detail',
-        title: 'View',
-        icon: 'https://via.placeholder.com/128/ff0000',
-      },
-    ],
-  };
-  navigator.serviceWorker.ready.then(function (serviceWorker) {
-    serviceWorker.showNotification(title, options);
-  });
-};
 
 /**
- *
- */
-
-/**
- *
  * using the registered service worker creates a push notification subscription and returns it
- *
  */
 const createNotificationSubscription = async () => {
   //wait for service worker installation to be ready
@@ -77,7 +45,6 @@ const getUserSubscription = () => {
 export {
   isPushNotificationSupported,
   askUserPermission,
-  sendNotification,
   createNotificationSubscription,
   getUserSubscription,
 };

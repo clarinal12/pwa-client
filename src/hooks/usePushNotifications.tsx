@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import http from '../utils/http';
-//the function to call the push server: https://github.com/Spyna/push-notification-demo/blob/master/front-end-react/src/utils/http.js
 
 import {
   isPushNotificationSupported,
@@ -8,47 +7,45 @@ import {
   createNotificationSubscription,
   getUserSubscription,
 } from 'utils/push-notifications';
-//import all the function created to manage the push notifications
 
+/**
+ * Check if the push notifications are supported by the browser
+ */
 const pushNotificationSupported = isPushNotificationSupported();
-//first thing to do: check if the push notifications are supported by the browser
 
 export default function usePushNotifications() {
-  const [userConsent, setSuserConsent] = useState(Notification.permission);
-  //to manage the user consent: Notification.permission is a JavaScript native function that return the current state of the permission
-  //We initialize the userConsent with that value
-  const [userSubscription, setUserSubscription] = useState(null);
-  //to manage the use push notification subscription
-  const [pushServerSubscriptionId, setPushServerSubscriptionId] = useState();
-  //to manage the push server subscription
-  const [error, setError] = useState(null);
-  //to manage errors
-  const [loading, setLoading] = useState(true);
-  //to manage async actions
+  /**
+   * Notification.permission is a JavaScript native function that return the current state of the permission
+   */
+  const [userConsent, setUserConsent] = useState(Notification.permission);
 
+  const [userSubscription, setUserSubscription] = useState(null);
+
+  const [pushServerSubscriptionId, setPushServerSubscriptionId] = useState();
+
+  const [error, setError] = useState(null);
+
+  const [loading, setLoading] = useState(true);
+
+  /**
+   * Retrieve if there is any push notification subscription for the registered service worker
+   */
   useEffect(() => {
     setLoading(true);
     setError(false);
-    const getExixtingSubscription = async () => {
+    const getExistingSubscription = async () => {
       const existingSubscription = await getUserSubscription();
       setUserSubscription(existingSubscription);
       setLoading(false);
     };
-    getExixtingSubscription();
+    getExistingSubscription();
   }, []);
-  //Retrieve if there is any push notification subscription for the registered service worker
-  // this use effect runs only in the first render
 
-  /**
-   * define a click handler that asks the user permission,
-   * it uses the setSuserConsent state, to set the consent of the user
-   * If the user denies the consent, an error is created with the setError hook
-   */
   const onClickAskUserPermission = () => {
     setLoading(true);
     setError(false);
     askUserPermission().then((consent) => {
-      setSuserConsent(consent);
+      setUserConsent(consent);
       if (consent !== 'granted') {
         setError({
           name: 'Consent denied',
@@ -59,7 +56,6 @@ export default function usePushNotifications() {
       setLoading(false);
     });
   };
-  //
 
   /**
    * define a click handler that creates a push notification subscription.
@@ -91,15 +87,15 @@ export default function usePushNotifications() {
   };
 
   /**
-   * define a click handler that sends the push susbcribtion to the push server.
-   * Once the subscription ics created on the server, it saves the id using the hook setPushServerSubscriptionId
+   * define a click handler that sends the push subscription to the push server.
    */
   const onClickSendSubscriptionToPushServer = () => {
+    const host = `https://push-notification-demo-server.herokuapp.com/subscription`;
     console.log({ userSubscription });
     setLoading(true);
     setError(false);
     http
-      .post('/subscription', userSubscription)
+      .post(host, userSubscription)
       .then(function (response) {
         console.log({ response });
         setPushServerSubscriptionId(response.id);
@@ -111,28 +107,11 @@ export default function usePushNotifications() {
       });
   };
 
-  /**
-   * define a click handler that requests the push server to send a notification, passing the id of the saved subscription
-   */
-  const onClickSendNotification = async () => {
-    setLoading(true);
-    setError(false);
-    await http.get(`/subscription/${pushServerSubscriptionId}`).catch((err) => {
-      setLoading(false);
-      setError(err);
-    });
-    setLoading(false);
-  };
-
-  /**
-   * returns all the stuff needed by a Component
-   */
   return {
     onClickAskUserPermission,
     onClickSubscribeToPushNotification,
     onClickSendSubscriptionToPushServer,
     pushServerSubscriptionId,
-    onClickSendNotification,
     userConsent,
     pushNotificationSupported,
     userSubscription,
