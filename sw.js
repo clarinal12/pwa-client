@@ -20,6 +20,7 @@ function handleSync(event) {
   };
 
   if (event.tag === 'awesome-sync') {
+    console.log('Showing Notification...');
     event.waitUntil(self.registration.showNotification('Nice Title', options));
   }
 }
