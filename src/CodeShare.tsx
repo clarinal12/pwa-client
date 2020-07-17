@@ -27,6 +27,7 @@ export default function AppWrapper() {
       <button onClick={() => askNotificationPermission()}>
         Allow Notifications
       </button>
+      <br></br>
       <button onClick={() => registerSync()}>Register Sync</button>
     </div>
   );
