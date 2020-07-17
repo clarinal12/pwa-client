@@ -1,11 +1,12 @@
-import React, { useEffect } from 'react';
+import React from 'react';
 
 const registerSync = () => {
   navigator.serviceWorker.ready
     .then((serviceWorker) => {
-      serviceWorker.sync.register('now-online');
+      serviceWorker.sync.register('awesome-sync');
+      console.log('Sync registered success');
     })
-    .catch((error) => console.log({ error }));
+    .catch((error) => console.log('Sync register failed', { error }));
 };
 
 const askNotificationPermission = () => {
@@ -19,10 +20,6 @@ const askNotificationPermission = () => {
 };
 
 export default function AppWrapper() {
-  useEffect(() => {
-    registerSync();
-  }, []);
-
   return (
     <div>
       <p>Hello World</p>
@@ -30,6 +27,7 @@ export default function AppWrapper() {
       <button onClick={() => askNotificationPermission()}>
         Allow Notifications
       </button>
+      <button onClick={() => registerSync()}>Register Sync</button>
     </div>
   );
 }

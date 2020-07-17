@@ -19,10 +19,9 @@ function handleSync(event) {
     ],
   };
 
-  event.waitUntil(self.registration.showNotification('Nice Title', options));
-
-  // event.notification.close();
-  // event.waitUntil(clients.openWindow(event.notification.data));
+  if (event.tag === 'awesome-sync') {
+    event.waitUntil(self.registration.showNotification('Nice Title', options));
+  }
 }
 
 self.addEventListener('sync', handleSync);
