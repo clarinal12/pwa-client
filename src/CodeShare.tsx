@@ -8,10 +8,28 @@ const registerSync = () => {
     .catch((error) => console.log({ error }));
 };
 
+const askNotificationPermission = () => {
+  Notification.requestPermission().then((consent) => {
+    if (consent !== 'granted') {
+      console.log('Permission not Granted');
+    } else {
+      console.log('Permission Granted');
+    }
+  });
+};
+
 export default function AppWrapper() {
   useEffect(() => {
     registerSync();
   }, []);
 
-  return <div>Hello World</div>;
+  return (
+    <div>
+      <p>Hello World</p>
+      <br></br>
+      <button onClick={() => askNotificationPermission()}>
+        Allow Notifications
+      </button>
+    </div>
+  );
 }
