@@ -22,7 +22,7 @@ const askNotificationPermission = () => {
 export default function AppWrapper() {
   return (
     <div>
-      <p>Hello World</p>
+      <p>Service worker's Notification and Background sync</p>
       <br></br>
       <button onClick={() => askNotificationPermission()}>
         Allow Notifications
