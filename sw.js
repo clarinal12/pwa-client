@@ -14,12 +14,12 @@ function handleSync(event) {
   console.log('[Service Worker] Sync Received.', event);
 
   const options = {
+    requireInteraction: true,
     data:
       'https://developers.google.com/web/fundamentals/push-notifications/display-a-notification#icon',
     body: 'Nice Body',
     icon: 'https://via.placeholder.com/128/ff0000',
     vibrate: [200, 100, 200],
-    tag: event.tag,
     badge: 'https://via.placeholder.com/128/ff0000',
     actions: [
       {
