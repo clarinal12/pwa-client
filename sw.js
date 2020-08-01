@@ -35,5 +35,10 @@ function handleSync(event) {
   }
 }
 
+function handleFetch(event) {
+  console.log('[Service Worker] Fetch Received.', event);
+}
+
 self.addEventListener('notificationclick', openPushNotification);
 self.addEventListener('sync', handleSync);
+self.addEventListener('fetch', handleFetch);
