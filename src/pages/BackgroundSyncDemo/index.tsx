@@ -14,8 +14,14 @@ const Demo = () => {
       setQuoteData(null);
     });
 
+    window.addEventListener('online', () => {
+      setIsOffline(false);
+      setQuoteData(null);
+    });
+
     return () => {
       window.removeEventListener('offline', () => {});
+      window.removeEventListener('online', () => {});
     };
   }, []);
 
