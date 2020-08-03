@@ -40,7 +40,6 @@ function handleFetch(event) {
 
   const requestUrl = new URL(event.request.url);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
-    console.log('quote request', event);
     event.respondWith(
       caches.match(event.request).then((response) => {
         return response || fetch(event.request);
