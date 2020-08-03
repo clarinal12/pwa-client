@@ -17,7 +17,6 @@ function handleSync(event) {
 
   if (event.tag === 'quote-sync') {
     fetch(URL).then((response) => {
-      console.log({ response });
       caches.open(cacheName).then((cache) => {
         console.log('Caching response');
         cache.put(URL, response.clone());
