@@ -12,11 +12,13 @@ const Demo = () => {
     window.addEventListener('offline', () => {
       setIsOffline(true);
       setQuoteData(null);
+      setSyncFired(false);
     });
 
     window.addEventListener('online', () => {
       setIsOffline(false);
       setQuoteData(null);
+      setSyncFired(false);
     });
 
     return () => {
@@ -76,7 +78,9 @@ const Demo = () => {
           {!isOffline && !syncFired && (
             <Button onClick={() => getQuote()}>Read New Quote</Button>
           )}
-          {syncFired && <h4>Quote will be downloaded once you go online.</h4>}
+          {syncFired && isOffline && (
+            <h4>Quote will be downloaded once you go online.</h4>
+          )}
         </div>
       </div>
     </Page>
