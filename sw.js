@@ -44,6 +44,7 @@ function handleSync(event) {
 
 function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
+  console.log('Handle Fetch');
   const requestUrl = new URL(event.request.url);
   console.log('Handling fetch', requestUrl);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
@@ -64,7 +65,6 @@ function handleFetch(event) {
   }
 }
 
-// Installation
 self.addEventListener('notificationclick', openPushNotification);
 self.addEventListener('sync', handleSync);
 self.addEventListener('fetch', handleFetch);
