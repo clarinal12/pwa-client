@@ -4,22 +4,23 @@ const cacheName = 'v1';
 const URL = 'https://programming-quotes-api.herokuapp.com/quotes/random';
 
 function openPushNotification(event) {
-  console.log(
-    '[Service Worker] Notification click Received.',
-    event.notification.data
-  );
+  // console.log(
+  //   '[Service Worker] Notification click Received.',
+  //   event.notification.data
+  // );
 
   event.notification.close();
   event.waitUntil(clients.openWindow(event.notification.data));
 }
 
 function handleSync(event) {
-  console.log('[Service Worker] Sync Received.', event);
+  // console.log('[Service Worker] Sync Received.', event);
 
   if (event.tag === 'quote-sync') {
     fetch(URL).then((response) => {
       console.log({ response });
       caches.open(cacheName).then((cache) => {
+        console.log('Caching response');
         cache.put(URL, response.clone());
       });
     });
@@ -39,18 +40,20 @@ function handleSync(event) {
       ],
     };
 
-    console.log('Showing Notification...');
     event.waitUntil(self.registration.showNotification('Nice Title', options));
   }
 }
 
 function handleFetch(event) {
-  console.log('[Service Worker] Fetch Received.', event);
+  // console.log('[Service Worker] Fetch Received.', event);
 
   const requestUrl = new URL(event.request.url);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
+    console.log('Hijacking');
     event.respondWith(
       caches.match(event.request).then((response) => {
+        console.log('Caching match found');
+
         if (response) {
           console.log('Return response from cache');
           return response;
