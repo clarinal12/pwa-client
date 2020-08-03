@@ -12,32 +12,35 @@ function openPushNotification(event) {
 
 function handleSync(event) {
   // console.log('[Service Worker] Sync Received.', event);
-  const cacheName = 'v1';
   const URL = 'https://programming-quotes-api.herokuapp.com/quotes/random';
+  const options = {
+    requireInteraction: true,
+    data: 'https://pwa-client.netlify.app',
+    icon: 'https://via.placeholder.com/128/ff0000',
+    badge: 'https://via.placeholder.com/128/ff0000',
+    actions: [
+      {
+        action: 'Detail',
+        title: 'View',
+      },
+    ],
+  };
 
   if (event.tag === 'quote-sync') {
-    fetch(URL).then((response) => {
-      caches.open(cacheName).then((cache) => {
-        cache.put(URL, response.clone());
+    fetch(URL)
+      .then((response) => {
+        caches.open('v1').then((cache) => {
+          cache.put(URL, response.clone());
+        });
+        return response.json();
+      })
+      .then((data) => {
+        options.body = `Click to view a quote from ${data.author}`;
       });
-    });
 
-    const options = {
-      requireInteraction: true,
-      data: 'https://pwa-client.netlify.app',
-      body: '',
-      icon: 'https://via.placeholder.com/128/ff0000',
-      vibrate: [200, 100, 200],
-      badge: 'https://via.placeholder.com/128/ff0000',
-      actions: [
-        {
-          action: 'Detail',
-          title: 'View',
-        },
-      ],
-    };
-
-    event.waitUntil(self.registration.showNotification('Nice Title', options));
+    event.waitUntil(
+      self.registration.showNotification('Quote is now available!', options)
+    );
   }
 }
 
@@ -49,6 +52,9 @@ function handleFetch(event) {
       caches.match(event.request).then((response) => {
         if (response) {
           console.log('Return response from cache');
+          caches.open('v1').then((cache) => {
+            cache.delete(response);
+          });
           return response;
         }
 
