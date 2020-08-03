@@ -54,20 +54,19 @@ const Demo = () => {
         </Button>
         <div className="text-center">
           {isOffline && <h4>You are offline</h4>}
-          {quoteData && !isOffline ? (
+          {quoteData && !isOffline && (
             <>
               <h1>{quoteData.en}</h1>
               <h3>- {quoteData.author}</h3>
             </>
-          ) : (
-            <h4>Press button to get a quote</h4>
           )}
+          {!quoteData && !isOffline && <h4>Press the button to get a quote</h4>}
           <br></br>
           {isOffline && !syncFired && (
             <Button onClick={() => fireSync()}>Download for Later</Button>
           )}
           {!isOffline && !syncFired && (
-            <Button onClick={() => getQuote()}>Read Quote</Button>
+            <Button onClick={() => getQuote()}>Read New Quote</Button>
           )}
           {syncFired && <h4>Quote will be downloaded once you go online.</h4>}
         </div>
