@@ -53,7 +53,8 @@ const Demo = () => {
           Allow Notifications
         </Button>
         <div className="text-center">
-          {quoteData ? (
+          {isOffline && <h4>You are offline</h4>}
+          {quoteData && !isOffline ? (
             <>
               <h1>{quoteData.en}</h1>
               <h3>- {quoteData.author}</h3>
