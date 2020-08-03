@@ -44,7 +44,7 @@ function handleSync(event) {
 
 function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
-  console.log('Handle Fetch');
+  console.log('Handle Fetch', event);
   const requestUrl = new URL(event.request.url);
   console.log('Handling fetch', requestUrl);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
