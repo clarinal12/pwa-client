@@ -18,7 +18,6 @@ function handleSync(event) {
   if (event.tag === 'quote-sync') {
     fetch(URL).then((response) => {
       caches.open(cacheName).then((cache) => {
-        console.log('Caching response');
         cache.put(URL, response.clone());
       });
     });
@@ -44,15 +43,10 @@ function handleSync(event) {
 
 function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
-  console.log('Handle Fetch', event);
   const requestUrl = new URL(event.request.url);
-  console.log('Handling fetch', requestUrl);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
-    console.log('Hijacking');
     event.respondWith(
       caches.match(event.request).then((response) => {
-        console.log('Caching match found');
-
         if (response) {
           console.log('Return response from cache');
           return response;
