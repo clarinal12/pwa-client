@@ -15,7 +15,7 @@ const Demo = () => {
   }, []);
 
   const getQuote = async () => {
-    const response = fetch(
+    const response = await fetch(
       'https://programming-quotes-api.herokuapp.com/quotes/random'
     );
     console.log('action response', response);

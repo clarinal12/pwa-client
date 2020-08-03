@@ -34,6 +34,7 @@ function handleSync(event) {
   }
 }
 
+const x = 'diarreah';
 function handleFetch(event) {
   console.log('[Service Worker] Fetch Received.', event);
 
@@ -41,7 +42,6 @@ function handleFetch(event) {
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
     event.respondWith(
       caches.match(event.request).then((response) => {
-        console.log({ response });
         return response || fetch(event.request);
       })
     );
