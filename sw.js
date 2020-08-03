@@ -48,9 +48,6 @@ function handleFetch(event) {
       caches.match(event.request).then((response) => {
         if (response) {
           console.log('Return response from cache');
-          caches.open('v1').then((cache) => {
-            cache.delete(response);
-          });
           return response;
         }
 
