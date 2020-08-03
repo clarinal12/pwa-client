@@ -37,7 +37,7 @@ function handleSync(event) {
 function handleFetch(event) {
   console.log('[Service Worker] Fetch Received.', event);
 
-  const requestUrl = new URL(e.request.url);
+  const requestUrl = new URL(event.request.url);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
     caches.match(event.request).then((response) => {
       console.log({ response });
