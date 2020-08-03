@@ -28,7 +28,7 @@ function handleSync(event) {
     ],
   };
 
-  if (event.tag === 'awesome-sync') {
+  if (event.tag === 'quote-sync') {
     console.log('Showing Notification...');
     event.waitUntil(self.registration.showNotification('Nice Title', options));
   }
@@ -42,7 +42,13 @@ function handleFetch(event) {
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
     event.respondWith(
       caches.match(event.request).then((response) => {
-        return response || fetch(event.request);
+        if (response) {
+          console.log('Return response from cache');
+          return response;
+        }
+
+        console.log('Return response from network');
+        return fetch(event.request);
       })
     );
   }

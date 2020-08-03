@@ -4,10 +4,12 @@ import { Page, Button } from 'react-onsenui';
 const Demo = () => {
   const [isOffline, setIsOffline] = useState(false);
   const [quoteData, setQuoteData] = useState(null);
+  const [syncFired, setSyncFired] = useState(false);
 
   useEffect(() => {
     window.addEventListener('offline', () => {
       setIsOffline(true);
+      setQuoteData(null);
     });
 
     return () => {
@@ -19,6 +21,13 @@ const Demo = () => {
     fetch('https://programming-quotes-api.herokuapp.com/quotes/random')
       .then((response) => response.json())
       .then((data) => setQuoteData(data));
+  };
+
+  const fireSync = () => {
+    navigator.serviceWorker.ready.then((swRegistration) => {
+      setSyncFired(true);
+      return swRegistration.sync.register('quote-sync');
+    });
   };
 
   return (
@@ -34,8 +43,8 @@ const Demo = () => {
             <h4>Press button to get a quote</h4>
           )}
           <br></br>
-          {isOffline ? (
-            <Button>Download for Later</Button>
+          {isOffline && !syncFired ? (
+            <Button onClick={() => fireSync()}>Download for Later</Button>
           ) : (
             <Button onClick={() => getQuote()}>Read Quote</Button>
           )}
