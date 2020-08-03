@@ -15,9 +15,8 @@ function handleSync(event) {
 
   const options = {
     requireInteraction: true,
-    data:
-      'https://developers.google.com/web/fundamentals/push-notifications/display-a-notification#icon',
-    body: 'Nice Body',
+    data: 'https://pwa-client.netlify.app',
+    body: '',
     icon: 'https://via.placeholder.com/128/ff0000',
     vibrate: [200, 100, 200],
     badge: 'https://via.placeholder.com/128/ff0000',
@@ -37,6 +36,14 @@ function handleSync(event) {
 
 function handleFetch(event) {
   console.log('[Service Worker] Fetch Received.', event);
+
+  const requestUrl = new URL(e.request.url);
+  if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
+    caches.match(event.request).then((response) => {
+      console.log({ response });
+      return response || fetch(event.request);
+    });
+  }
 }
 
 self.addEventListener('notificationclick', openPushNotification);
