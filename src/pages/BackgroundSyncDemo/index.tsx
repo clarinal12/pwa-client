@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Page, Button } from 'react-onsenui';
 
+const URL = 'https://programming-quotes-api.herokuapp.com/quotes/random';
+
 const Demo = () => {
   const [isOffline, setIsOffline] = useState(false);
   const [quoteData, setQuoteData] = useState(null);
@@ -28,7 +30,7 @@ const Demo = () => {
   };
 
   const getQuote = () => {
-    fetch('https://programming-quotes-api.herokuapp.com/quotes/random')
+    fetch(URL)
       .then((response) => response.json())
       .then((data) => setQuoteData(data));
   };
