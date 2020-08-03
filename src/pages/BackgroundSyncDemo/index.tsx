@@ -17,6 +17,16 @@ const Demo = () => {
     };
   }, []);
 
+  const askNotificationPermission = () => {
+    Notification.requestPermission().then((consent) => {
+      if (consent !== 'granted') {
+        console.log('Permission not Granted');
+      } else {
+        console.log('Permission Granted');
+      }
+    });
+  };
+
   const getQuote = () => {
     fetch('https://programming-quotes-api.herokuapp.com/quotes/random')
       .then((response) => response.json())
@@ -36,6 +46,12 @@ const Demo = () => {
   return (
     <Page>
       <div className="content h-screen w-screen flex items-center justify-center">
+        <Button
+          onClick={() => askNotificationPermission()}
+          style={{ position: 'absolute', left: 20, top: 20 }}
+        >
+          Allow Notifications
+        </Button>
         <div className="text-center">
           {quoteData ? (
             <>
