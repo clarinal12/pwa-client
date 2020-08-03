@@ -1,6 +1,4 @@
 /* eslint-disable no-restricted-globals */
-const cacheName = 'v1';
-const URL = 'https://programming-quotes-api.herokuapp.com/quotes/random';
 
 function openPushNotification(event) {
   // console.log(
@@ -14,14 +12,16 @@ function openPushNotification(event) {
 
 function handleSync(event) {
   // console.log('[Service Worker] Sync Received.', event);
+  const cacheName = 'v1';
+  const URL = 'https://programming-quotes-api.herokuapp.com/quotes/random';
 
   if (event.tag === 'quote-sync') {
-    // fetch(URL).then((response) => {
-    //   caches.open(cacheName).then((cache) => {
-    //     console.log('Caching response');
-    //     cache.put(URL, response.clone());
-    //   });
-    // });
+    fetch(URL).then((response) => {
+      caches.open(cacheName).then((cache) => {
+        console.log('Caching response');
+        cache.put(URL, response.clone());
+      });
+    });
 
     const options = {
       requireInteraction: true,
