@@ -1,6 +1,5 @@
 /* eslint-disable no-restricted-globals */
 const cacheName = 'v1';
-
 const URL = 'https://programming-quotes-api.herokuapp.com/quotes/random';
 
 function openPushNotification(event) {
@@ -46,8 +45,8 @@ function handleSync(event) {
 
 function handleFetch(event) {
   // console.log('[Service Worker] Fetch Received.', event);
-
   const requestUrl = new URL(event.request.url);
+  console.log('Handling fetch', requestUrl);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
     console.log('Hijacking');
     event.respondWith(
