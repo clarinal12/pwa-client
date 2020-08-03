@@ -1,27 +1,4 @@
 /* eslint-disable no-restricted-globals */
-function receivePushNotification(event) {
-  console.log('[Service Worker] Push Received.', event);
-
-  const { tag, title, text } = event.data.json();
-
-  const options = {
-    data:
-      'https://developers.google.com/web/fundamentals/push-notifications/display-a-notification#icon',
-    body: text,
-    icon: 'https://via.placeholder.com/128/ff0000',
-    vibrate: [200, 100, 200],
-    tag,
-    badge: 'https://via.placeholder.com/128/ff0000',
-    actions: [
-      {
-        action: 'Detail',
-        title: 'View',
-      },
-    ],
-  };
-
-  event.waitUntil(self.registration.showNotification(title, options));
-}
 
 function openPushNotification(event) {
   console.log(
@@ -33,5 +10,35 @@ function openPushNotification(event) {
   event.waitUntil(clients.openWindow(event.notification.data));
 }
 
-self.addEventListener('push', receivePushNotification);
+function handleSync(event) {
+  console.log('[Service Worker] Sync Received.', event);
+
+  const options = {
+    requireInteraction: true,
+    data:
+      'https://developers.google.com/web/fundamentals/push-notifications/display-a-notification#icon',
+    body: 'Nice Body',
+    icon: 'https://via.placeholder.com/128/ff0000',
+    vibrate: [200, 100, 200],
+    badge: 'https://via.placeholder.com/128/ff0000',
+    actions: [
+      {
+        action: 'Detail',
+        title: 'View',
+      },
+    ],
+  };
+
+  if (event.tag === 'awesome-sync') {
+    console.log('Showing Notification...');
+    event.waitUntil(self.registration.showNotification('Nice Title', options));
+  }
+}
+
+function handleFetch(event) {
+  console.log('[Service Worker] Fetch Received.', event);
+}
+
 self.addEventListener('notificationclick', openPushNotification);
+self.addEventListener('sync', handleSync);
+self.addEventListener('fetch', handleFetch);

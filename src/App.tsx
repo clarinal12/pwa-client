@@ -6,7 +6,8 @@ import { ProvideAuth } from 'hooks/useAuth';
 import 'onsenui/css/onsenui.css';
 import 'styles/tailwind.css';
 import 'styles/themes/default.css';
-import Authentication from './pages/Authentication';
+// import Authentication from './pages/Authentication';
+import BackgroundSyncDemo from './pages/BackgroundSyncDemo';
 
 interface IAppProps {
   client: any;
@@ -25,7 +26,7 @@ const App: React.FC<IAppProps> = ({ client, loading }) => {
     <ApolloHooksProvider client={client}>
       <ApolloProvider client={client}>
         <ProvideAuth client={client}>
-          <Authentication />
+          <BackgroundSyncDemo />
         </ProvideAuth>
       </ApolloProvider>
     </ApolloHooksProvider>
