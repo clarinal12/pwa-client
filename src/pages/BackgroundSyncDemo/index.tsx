@@ -37,7 +37,7 @@ const Demo = () => {
           {quoteData ? (
             <>
               <h1>{quoteData.en}</h1>
-              <h3>{quoteData.author}</h3>
+              <h3>- {quoteData.author}</h3>
             </>
           ) : (
             <h4>Press button to get a quote</h4>
