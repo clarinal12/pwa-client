@@ -18,6 +18,7 @@ function handleSync(event) {
     data: 'https://pwa-client.netlify.app',
     icon: 'https://via.placeholder.com/128/ff0000',
     badge: 'https://via.placeholder.com/128/ff0000',
+    body: 'Click to view the quote',
     actions: [
       {
         action: 'Detail',
@@ -27,16 +28,11 @@ function handleSync(event) {
   };
 
   if (event.tag === 'quote-sync') {
-    fetch(URL)
-      .then((response) => {
-        caches.open('v1').then((cache) => {
-          cache.put(URL, response.clone());
-        });
-        return response.json();
-      })
-      .then((data) => {
-        options.body = `Click to view a quote from ${data.author}`;
+    fetch(URL).then((response) => {
+      caches.open('v1').then((cache) => {
+        cache.put(URL, response.clone());
       });
+    });
 
     event.waitUntil(
       self.registration.showNotification('Quote is now available!', options)
