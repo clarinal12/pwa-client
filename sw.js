@@ -39,10 +39,12 @@ function handleFetch(event) {
 
   const requestUrl = new URL(event.request.url);
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
-    caches.match(event.request).then((response) => {
-      console.log({ response });
-      return response || fetch(event.request);
-    });
+    event.respondWith(
+      caches.match(event.request).then((response) => {
+        console.log({ response });
+        return response || fetch(event.request);
+      })
+    );
   }
 }
 
