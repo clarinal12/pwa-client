@@ -24,10 +24,13 @@ const Demo = () => {
   };
 
   const fireSync = () => {
-    navigator.serviceWorker.ready.then((swRegistration) => {
-      setSyncFired(true);
-      return swRegistration.sync.register('quote-sync');
-    });
+    navigator.serviceWorker.ready
+      .then((serviceWorker) => {
+        serviceWorker.sync.register('quote-sync');
+        setSyncFired(true);
+        console.log('Sync registered success');
+      })
+      .catch((error) => console.log('Sync register failed', { error }));
   };
 
   return (
