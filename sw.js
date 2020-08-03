@@ -42,7 +42,13 @@ function handleFetch(event) {
   if (requestUrl.hostname === 'programming-quotes-api.herokuapp.com') {
     event.respondWith(
       caches.match(event.request).then((response) => {
-        return response || fetch(event.request);
+        if (response) {
+          return response;
+        }
+
+        fetch(event.request).then((res) => {
+          return res;
+        });
       })
     );
   }
