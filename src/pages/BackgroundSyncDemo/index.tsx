@@ -14,11 +14,10 @@ const Demo = () => {
     };
   }, []);
 
-  const getQuote = async () => {
-    const response = await fetch(
-      'https://programming-quotes-api.herokuapp.com/quotes/random'
-    );
-    console.log('action response', response);
+  const getQuote = () => {
+    fetch('https://programming-quotes-api.herokuapp.com/quotes/random')
+      .then((response) => response.json())
+      .then((data) => console.log({ data }));
   };
 
   return (
