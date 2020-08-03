@@ -46,11 +46,13 @@ const Demo = () => {
             <h4>Press button to get a quote</h4>
           )}
           <br></br>
-          {isOffline && !syncFired ? (
+          {isOffline && !syncFired && (
             <Button onClick={() => fireSync()}>Download for Later</Button>
-          ) : (
+          )}
+          {!isOffline && !syncFired && (
             <Button onClick={() => getQuote()}>Read Quote</Button>
           )}
+          {syncFired && <h4>Quote will be downloaded once you go online.</h4>}
         </div>
       </div>
     </Page>
