@@ -16,12 +16,12 @@ function handleSync(event) {
   // console.log('[Service Worker] Sync Received.', event);
 
   if (event.tag === 'quote-sync') {
-    fetch(URL).then((response) => {
-      caches.open(cacheName).then((cache) => {
-        console.log('Caching response');
-        cache.put(URL, response.clone());
-      });
-    });
+    // fetch(URL).then((response) => {
+    //   caches.open(cacheName).then((cache) => {
+    //     console.log('Caching response');
+    //     cache.put(URL, response.clone());
+    //   });
+    // });
 
     const options = {
       requireInteraction: true,
