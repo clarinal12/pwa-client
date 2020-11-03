@@ -1,6 +1,6 @@
 [[redirects]]
   from = "/graphql"
-  to = "http://dev.execreator.com/"
+  to = "http://dev.execreator.com/graphql"
   status = 200
   force = true
 
