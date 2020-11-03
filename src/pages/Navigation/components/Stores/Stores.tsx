@@ -1,8 +1,7 @@
 import React from 'react';
 import { Page, Toolbar, Fab, Icon } from 'react-onsenui';
-import StoreList from './components/StoresList';
 import AddStore from './components/AddStore';
-import UpdateStore from './components/UpdateStore';
+// import UpdateStore from './components/UpdateStore';
 
 interface IStoreProps {
   title: string;
@@ -14,12 +13,12 @@ const Stores: React.FC<IStoreProps> = ({ title, navigator }) => {
     navigator.pushPage({ component: AddStore, props: { key: 'add-store' } });
   };
 
-  const pushToUpdateStore = (store: object) => {
-    navigator.pushPage({
-      component: UpdateStore,
-      props: { key: 'update-store', store },
-    });
-  };
+  // const pushToUpdateStore = (store: object) => {
+  //   navigator.pushPage({
+  //     component: UpdateStore,
+  //     props: { key: 'update-store', store },
+  //   });
+  // };
 
   return (
     <Page
@@ -35,12 +34,14 @@ const Stores: React.FC<IStoreProps> = ({ title, navigator }) => {
           onClick={() => pushToAddStore()}
         >
           <div className="h-full w-full flex items-center justify-center">
-            <Icon icon="fa-plus" size={10} />
+            <Icon icon="md-plus" size={15} />
           </div>
         </Fab>
       )}
     >
-      <StoreList pushToUpdateStore={pushToUpdateStore} />
+      <div className="p-3">
+        HELLO STORES
+      </div>
     </Page>
   );
 };

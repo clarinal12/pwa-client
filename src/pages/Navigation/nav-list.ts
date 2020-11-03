@@ -1,15 +1,28 @@
-import Stores from './components/Stores';
-import Accounts from './components/Accounts';
+import Dashboard from './components/Dashboard';
+import Items from './components/Items';
+import Transactions from './components/Transactions';
+import Schedule from './components/Schedule';
+
 
 export const tabSections = [
   {
-    label: 'Stores',
-    component: Stores,
-    icon: 'md-home',
+    label: 'Dashboard',
+    component: Dashboard,
+    icon: 'md-view-dashboard',
   },
   {
-    label: 'Accounts',
-    component: Accounts,
-    icon: 'md-accounts',
+    label: 'Items',
+    component: Items,
+    icon: 'md-shopping-cart',
+  },
+  {
+    label: 'Transactions',
+    component: Transactions,
+    icon: 'md-receipt',
+  },
+  {
+    label: 'Schedule',
+    component: Schedule,
+    icon: 'md-calendar-note',
   },
 ];

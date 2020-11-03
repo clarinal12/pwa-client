@@ -63,7 +63,7 @@ const LoginForm = () => {
           </div>
         </AlertDialog>
       )}
-      <form className="p-10">
+      <form className="p-10" onSubmit={handleSubmit}>
         <h1>Login</h1>
         <Input
           float
@@ -85,13 +85,9 @@ const LoginForm = () => {
           modifier="material"
         />
         <div className="mt-6 w-full text-right">
-          <Button
-            className="w-full text-center"
-            disabled={loading}
-            onClick={() => handleSubmit()}
-          >
+          <button disabled={loading} className="button w-full text-center" type="submit">
             {loading ? 'Submitting...' : 'Submit'}
-          </Button>
+          </button>
         </div>
       </form>
     </div>

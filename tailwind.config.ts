@@ -4,10 +4,14 @@ module.exports = {
     extend: {
       fontSize: {},
       colors: {
-        primary: '#0176fe',
-        dark: '#0f0f0f',
-        light: '#ffffff',
+        primary: '#0176FE',
+        dark: '#0F0F0F',
+        light: '#FFFFFF',
+        danger: '#FE3824'
       },
+    },
+    container: {
+      center: true,
     },
   },
   variants: {},
