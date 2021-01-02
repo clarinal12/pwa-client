@@ -8,13 +8,11 @@ const updateItem = async (data: any) => {
   return result;
 };
 
-
 type Props = {
   navigator: any;
-  item?: { [x: string]: any },
+  item?: { [x: string]: any };
   refetch: () => void;
-}
-
+};
 
 const UpdateItem: React.FC<Props> = ({ navigator, item, refetch }) => {
   const [readOnly, setReadOnly] = useState(true);
@@ -31,16 +29,16 @@ const UpdateItem: React.FC<Props> = ({ navigator, item, refetch }) => {
   };
 
   const submit = async (data: any) => {
-    const result = await updateItem({ ...data, id: item.id })
+    const result = await updateItem({ ...data, id: item.id });
 
     if (result) {
-      handleSuccess()
+      handleSuccess();
     }
-  }
+  };
 
   const handleSetReadOnly = () => {
-    setReadOnly(prev => !prev)
-  }
+    setReadOnly((prev) => !prev);
+  };
 
   return (
     <Page
@@ -52,21 +50,24 @@ const UpdateItem: React.FC<Props> = ({ navigator, item, refetch }) => {
           <div className="center">{item.name}</div>
         </Toolbar>
       )}
-      renderFixed={() => readOnly && (
-        <Fab
-          position="top right"
-          modifier="mini"
-          onClick={() => setReadOnly(false)}
-        >
-          <div className="h-full w-full flex items-center justify-center">
-            <Icon icon="md-edit" size={15} />
-          </div>
-        </Fab>
-      )}
+      renderFixed={() =>
+        readOnly && (
+          <Fab position="bottom right" onClick={() => setReadOnly(false)}>
+            <div className="h-full w-full flex items-center justify-center">
+              <Icon icon="md-edit" size={20} />
+            </div>
+          </Fab>
+        )
+      }
     >
       <div className="content w-full h-full p-5">
         <div className="h-full w-full flex items-center justify-center">
-          <ItemForm setReadOnly={handleSetReadOnly} readOnly={readOnly} defaultValues={item} submit={submit} />
+          <ItemForm
+            setReadOnly={handleSetReadOnly}
+            readOnly={readOnly}
+            defaultValues={item}
+            submit={submit}
+          />
         </div>
       </div>
     </Page>

@@ -6,7 +6,8 @@ const DB_VERSION = 1;
 const db = new Dexie(DB_NAME);
 db.version(DB_VERSION).stores({
   items: 'id',
-  transactions: 'id'
+  transactions: 'id',
+  categories: 'id'
 });
 
 export default db;

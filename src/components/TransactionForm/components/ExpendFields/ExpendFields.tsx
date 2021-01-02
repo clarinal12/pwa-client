@@ -1,5 +1,4 @@
 import React from 'react';
-import ItemSelect from 'components/ItemSelect';
 import { Input } from 'react-onsenui';
 import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
@@ -19,49 +18,16 @@ type Props = {
   readOnly?: boolean;
 };
 
-const PurchaseFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
+const ExpenseFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
   const { control } = useFormValues;
 
   return (
     <div>
-      <div className="flex justify-between items-center mb-3">
-        Item:
-        <Controller
-          control={control}
-          name="item"
-          render={({ onChange, value }) => (
-            <ItemSelect
-              value={value}
-              onChange={(value) => onChange(value.id)}
-              disabled={readOnly}
-            />
-          )}
-        />
-      </div>
       <div className="flex justify-between mb-3">
-        <div>Quantity:</div>
+        <div>Amount:</div>
         <Controller
           control={control}
-          name="quantity"
-          render={({ onChange, value, name }) => (
-            <StyledInput
-              float
-              type="number"
-              placeholder="0"
-              modifier="underbar"
-              name={name}
-              onChange={onChange}
-              value={value}
-              disabled={readOnly}
-            />
-          )}
-        />
-      </div>
-      <div className="flex justify-between mb-3">
-        <div>Price:</div>
-        <Controller
-          control={control}
-          name="price"
+          name="amount"
           render={({ onChange, value, name }) => (
             <StyledInput
               float
@@ -98,4 +64,4 @@ const PurchaseFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
   );
 };
 
-export default PurchaseFields;
+export default ExpenseFields;

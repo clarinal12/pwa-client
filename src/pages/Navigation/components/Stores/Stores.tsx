@@ -28,20 +28,14 @@ const Stores: React.FC<IStoreProps> = ({ title, navigator }) => {
         </Toolbar>
       )}
       renderFixed={() => (
-        <Fab
-          position="top right"
-          modifier="mini"
-          onClick={() => pushToAddStore()}
-        >
+        <Fab position="bottom right" onClick={() => pushToAddStore()}>
           <div className="h-full w-full flex items-center justify-center">
-            <Icon icon="md-plus" size={15} />
+            <Icon icon="md-plus" size={20} />
           </div>
         </Fab>
       )}
     >
-      <div className="p-3">
-        HELLO STORES
-      </div>
+      <div className="p-3">HELLO STORES</div>
     </Page>
   );
 };

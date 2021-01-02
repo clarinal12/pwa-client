@@ -8,6 +8,8 @@ import SaleFields from './components/SaleFields';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { getTypeValidationSchema } from './validationSchema';
 import CashInFields from './components/CashInFields';
+import ExpendFields from './components/ExpendFields';
+import CashoutFields from './components/CashoutFields';
 
 type Props = {
   submit: (data: any) => void;
@@ -120,20 +122,26 @@ const TransactionForm: React.FC<Props> = ({
         {transactionType === 'CASH_IN' && (
           <CashInFields useFormValues={useFormValues} readOnly={readOnly} />
         )}
+        {transactionType === 'EXPEND' && (
+          <ExpendFields useFormValues={useFormValues} readOnly={readOnly} />
+        )}
+        {transactionType === 'CASH_OUT' && (
+          <CashoutFields useFormValues={useFormValues} readOnly={readOnly} />
+        )}
 
         {readOnly ? (
           <Button className="text-center" modifier="light">
             Adjust
           </Button>
         ) : (
-            <button
-              disabled={!formState.isDirty}
-              type="submit"
-              className={`button`}
-            >
-              Submit
-            </button>
-          )}
+          <button
+            disabled={!formState.isDirty}
+            type="submit"
+            className={`button`}
+          >
+            Submit
+          </button>
+        )}
       </div>
     </StyledForm>
   );

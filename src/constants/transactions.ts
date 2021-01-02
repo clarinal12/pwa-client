@@ -16,7 +16,6 @@ export const labels = {
 
 export const defaultFieldValues = {
   PURCHASE: {
-    // @ts-ignore
     type: types.PURCHASE,
     item: '',
     quantity: '',
@@ -24,7 +23,6 @@ export const defaultFieldValues = {
     note: '',
   },
   SALE: {
-    // @ts-ignore
     type: types.SALE,
     item: '',
     quantity: '',
@@ -32,13 +30,21 @@ export const defaultFieldValues = {
     discount: '',
     note: '',
   },
-  EXPEND: 'Expend',
   CASH_IN: {
     type: types.CASH_IN,
     amount: '',
     note: ''
   },
-  CASH_OUT: 'Cash-out',
+  EXPEND: {
+    type: types.EXPEND,
+    amount: '',
+    note: ''
+  },
+  CASH_OUT: {
+    type: types.CASH_OUT,
+    amount: '',
+    note: ''
+  },
 };
 
 // @ts-ignore

@@ -1,31 +1,36 @@
 import React from 'react';
 import { useForm, Controller } from 'react-hook-form';
 import { Input, Button } from 'react-onsenui';
-import { StyledForm } from 'styles/forms'
+import { StyledForm } from 'styles/forms';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { itemValidation } from './validationSchema'
-
+import { itemValidation } from './validationSchema';
+import CategorySelect from 'components/CategorySelect';
 
 type Props = {
   submit: (data: any) => void;
   defaultValues?: { [x: string]: any };
-  readOnly?: boolean
-  setReadOnly?: () => void
+  readOnly?: boolean;
+  setReadOnly?: () => void;
 };
 
-const ItemForm: React.FC<Props> = ({ submit, defaultValues, readOnly, setReadOnly }) => {
+const ItemForm: React.FC<Props> = ({
+  submit,
+  defaultValues,
+  readOnly,
+  setReadOnly,
+}) => {
   const { handleSubmit, control, formState, errors, reset } = useForm({
     defaultValues: {
       name: defaultValues?.name || '',
       code: defaultValues?.code || '',
-      category: defaultValues?.category || '',
+      categories: defaultValues?.categories || [],
       price: defaultValues?.price || null,
       description: defaultValues?.description || null,
-      quantity: defaultValues?.quantity || 0
+      quantity: defaultValues?.quantity || 0,
     },
-    resolver: yupResolver(itemValidation)
+    resolver: yupResolver(itemValidation),
   });
-  const { isDirty } = formState
+  const { isDirty } = formState;
 
   const onSubmit = (data: any) => {
     submit(data);
@@ -49,7 +54,9 @@ const ItemForm: React.FC<Props> = ({ submit, defaultValues, readOnly, setReadOnl
                 value={value}
                 disabled={readOnly}
               />
-              {errors.name && <small className="text-danger">{errors.name.message}</small>}
+              {errors.name && (
+                <small className="text-danger">{errors.name.message}</small>
+              )}
             </div>
           )}
         />
@@ -68,26 +75,28 @@ const ItemForm: React.FC<Props> = ({ submit, defaultValues, readOnly, setReadOnl
                 value={value}
                 disabled={readOnly}
               />
-              {errors.code && <small className="text-danger">{errors.code.message}</small>}
+              {errors.code && (
+                <small className="text-danger">{errors.code.message}</small>
+              )}
             </div>
           )}
         />
         <Controller
           control={control}
-          name="category"
-          render={({ onChange, value, name }) => (
+          name="categories"
+          render={({ onChange, value }) => (
             <div>
-              <Input
-                float
-                className="w-full"
-                placeholder="Category"
-                modifier="material"
-                name={name}
-                onChange={onChange}
+              <CategorySelect
+                onChange={(value) => onChange(value)}
                 value={value}
                 disabled={readOnly}
+                type="text"
               />
-              {errors.category && <small className="text-danger">{errors.category.message}</small>}
+              {errors.categories && (
+                <small className="text-danger">
+                  {(errors.categories as any)?.message}
+                </small>
+              )}
             </div>
           )}
         />
@@ -123,7 +132,9 @@ const ItemForm: React.FC<Props> = ({ submit, defaultValues, readOnly, setReadOnl
                 value={value}
                 disabled={readOnly}
               />
-              <small className="text-gray-600">Adding value to this item will make it available for sale.</small>
+              <small className="text-gray-600">
+                Adding value to this item will make it available for sale.
+              </small>
             </div>
           )}
         />
@@ -147,16 +158,22 @@ const ItemForm: React.FC<Props> = ({ submit, defaultValues, readOnly, setReadOnl
           />
         </div>
         <button
-          disabled={!isDirty} type="submit"
-          className={`button ${!readOnly ? 'visible' : 'invisible'}`}>
+          disabled={!isDirty}
+          type="submit"
+          className={`button ${!readOnly ? 'visible' : 'invisible'}`}
+        >
           Submit
         </button>
-        <Button modifier="quiet"
+        <Button
+          modifier="quiet"
           onClick={() => {
-            reset()
-            setReadOnly()
+            reset();
+            setReadOnly();
           }}
-          className={`text-center ${!readOnly && defaultValues ? 'visible' : 'invisible'}`}>
+          className={`text-center ${
+            !readOnly && defaultValues ? 'visible' : 'invisible'
+          }`}
+        >
           Cancel
         </Button>
       </div>
