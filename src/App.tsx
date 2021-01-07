@@ -1,34 +1,15 @@
 import React from 'react';
-import { ApolloProvider } from 'react-apollo';
-import { ApolloProvider as ApolloHooksProvider } from '@apollo/react-hooks';
-import { ProgressCircular } from 'react-onsenui';
 import { ProvideAuth } from 'hooks/useAuth';
 import 'onsenui/css/onsenui.css';
 import 'styles/tailwind.css';
 import 'styles/themes/default.css';
 import Authentication from './pages/Authentication';
 
-interface IAppProps {
-  client: any;
-  loading: boolean;
-}
-
-const App: React.FC<IAppProps> = ({ client, loading }) => {
-  if (loading)
-    return (
-      <div className="h-screen w-screen flex items-center justify-center">
-        <ProgressCircular indeterminate />
-      </div>
-    );
-
+const App = () => {
   return (
-    <ApolloHooksProvider client={client}>
-      <ApolloProvider client={client}>
-        <ProvideAuth client={client}>
-          <Authentication />
-        </ProvideAuth>
-      </ApolloProvider>
-    </ApolloHooksProvider>
+    <ProvideAuth>
+      <Authentication />
+    </ProvideAuth>
   );
 };
 

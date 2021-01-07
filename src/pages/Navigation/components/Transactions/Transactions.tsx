@@ -12,21 +12,13 @@ import AddTransaction from './components/AddTransaction';
 import db from 'utils/idb';
 import UpdateTransaction from './components/UpdateTransaction';
 import { getTypeLabel } from 'constants/transactions';
+import { useFireStoreQuery } from 'hooks/useFirebase';
 
 const queryTransactions = async () => {
   const result = await db.table('transactions').toArray();
 
   return result || null;
 };
-
-// const updateItem = async (data: any) => {
-//   const result = await db.table('items').put(data, data.id);
-//   return result;
-// };
-
-// const removeItem = async (edgesPath: string) => {
-//   await db.table('items').delete(edgesPath);
-// };
 
 const successColorTypes = ['CASH_IN', 'SALE'];
 const primaryColorTypes = ['PURCHASE'];
@@ -51,6 +43,9 @@ type Props = {
 
 const Transactions: React.FC<Props> = ({ title, navigator }) => {
   const [transactions, setTransactions] = useState([]);
+  const { data, loading, error } = useFireStoreQuery({
+    collection: 'transactions',
+  });
 
   const fetchTransactions = async () => {
     const result = await queryTransactions();

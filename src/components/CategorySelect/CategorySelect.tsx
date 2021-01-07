@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 import {
   Button,
   Modal,
@@ -12,8 +12,7 @@ import {
   Checkbox,
 } from 'react-onsenui';
 import styled from 'styled-components';
-import db from 'utils/idb';
-import uuid from 'utils/uuid';
+import { useFireStoreAdd, useFireStoreQuery } from 'hooks/useFirebase';
 
 const StyledButton = styled(Button)`
   width: 80px;
@@ -26,66 +25,47 @@ const StyledCheckbox = styled(Checkbox)`
   justify-content: space-between;
 `;
 
-const queryFilteredCategories = async (
-  filterFunction: (value: any) => boolean
-) => {
-  const result = await db.table('categories').filter(filterFunction).toArray();
-
-  return result || null;
-};
-
-const queryCategories = async () => {
-  const result = await db.table('categories').toArray();
-
-  return result || null;
-};
-
 type Props = {
   value?: String[];
   onChange: (value: any) => void;
   filterFunction?: (value: any) => boolean;
   disabled?: boolean;
-  type: 'select' | 'text';
 };
 
-const CategorySelect: React.FC<Props> = ({
-  value,
-  onChange,
-  filterFunction,
-  disabled,
-  type,
-}) => {
+const CategorySelect: React.FC<Props> = ({ value, onChange, disabled }) => {
   const [open, setOpen] = useState(false);
   const [categories, setCategories] = useState([]);
   const [categoryName, setCategoryName] = useState('');
 
-  const addCategory = async () => {
-    try {
-      const result = await db.table('categories').add({
-        id: uuid('category'),
+  const { refetch } = useFireStoreQuery({
+    collection: 'categories',
+    onCompleted: (data) => {
+      const entries = [] as any;
+      data.forEach((record: any) => {
+        entries.push({
+          id: record.id,
+          ...record.data(),
+        });
+      });
+      setCategories(entries);
+    },
+  });
+
+  const [addCategory, { loading: addingCategory }] = useFireStoreAdd({
+    collection: 'categories',
+    onCompleted: () => {
+      setCategoryName('');
+      refetch();
+    },
+  });
+
+  const handleAddCategory = async () => {
+    if (categoryName) {
+      addCategory({
         name: categoryName,
       });
-
-      if (result) {
-        setCategoryName('');
-        fetchCategories();
-      }
-    } catch (error) {
-      console.log({ error });
     }
   };
-
-  const fetchCategories = async () => {
-    const result = filterFunction
-      ? await queryFilteredCategories(filterFunction)
-      : await queryCategories();
-    setCategories(result);
-  };
-
-  useEffect(() => {
-    fetchCategories();
-    // eslint-disable-next-line
-  }, []);
 
   const handleSelect = (id: string, checked: boolean) => {
     if (checked) {
@@ -102,7 +82,6 @@ const CategorySelect: React.FC<Props> = ({
     value.includes(category.id)
   );
 
-  // console.log({ value, categories, selectedCategories });
   return (
     <div>
       <Input
@@ -144,10 +123,11 @@ const CategorySelect: React.FC<Props> = ({
                 />
                 <StyledButton
                   modifier="material"
-                  onClick={() => addCategory()}
+                  onClick={() => handleAddCategory()}
                   className="text-center text-xs"
+                  disabled={addingCategory}
                 >
-                  Add
+                  {addingCategory ? 'Adding...' : 'Add'}
                 </StyledButton>
               </div>
             </Card>

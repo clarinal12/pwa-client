@@ -1,24 +1,15 @@
 import React from 'react';
 import { Page, Toolbar, BackButton } from 'react-onsenui';
 import ItemForm from 'components/ItemForm';
-import db from 'utils/idb';
-import uuid from 'utils/uuid';
-
-const addItem = async (data: any) => {
-  const result = await db.table('items').add({
-    id: uuid('item'),
-    ...data
-  });
-  return result;
-};
-
+import useFirebase, { useFireStoreAdd } from 'hooks/useFirebase';
 
 type Props = {
   navigator: any;
   refetch?: () => void;
-}
+};
 
 const AddItem: React.FC<Props> = ({ navigator, refetch }) => {
+  const { fireStore } = useFirebase();
   const pop = () => {
     if (refetch) {
       refetch();
@@ -30,13 +21,22 @@ const AddItem: React.FC<Props> = ({ navigator, refetch }) => {
     pop();
   };
 
-  const submit = async (data: any) => {
-    const result = await addItem(data)
+  const [addItem] = useFireStoreAdd({
+    collection: 'items',
+    onCompleted: (data: any) => {
+      handleSuccess();
+    },
+  });
 
-    if (result) {
-      handleSuccess()
-    }
-  }
+  const submit = async (data: any) => {
+    const { categories } = data;
+    addItem({
+      ...data,
+      categories: categories.map((id: string) =>
+        fireStore.doc('categories/' + id)
+      ),
+    });
+  };
 
   return (
     <Page

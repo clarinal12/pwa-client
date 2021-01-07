@@ -1,40 +1,22 @@
 import React, { useState } from 'react';
 import { Input, Button, AlertDialog } from 'react-onsenui';
 import { useFormik } from 'formik';
-import { AUTH } from 'mutations/authentication';
-import { useMutation } from '@apollo/react-hooks';
 import { useAuth } from 'hooks/useAuth';
 import { loginSchema } from './validationSchema';
 
 const LoginForm = () => {
+  const { signIn, signingIn } = useAuth();
   const [alert, toggleAlert] = useState({
     open: false,
     title: '',
     message: '',
   });
-  const { setUserToken }: any = useAuth();
-  const [login, { loading }] = useMutation(AUTH, {
-    onCompleted: (result) => {
-      const { auth } = result;
-      setUserToken(auth.token);
-    },
-    onError: (err) => {
-      const { message } = err;
-      toggleAlert({
-        open: true,
-        title: 'Login Error',
-        message,
-      });
-    },
-  });
 
   const formik = useFormik({
-    initialValues: { username: '', password: '' },
+    initialValues: { email: '', password: '' },
     onSubmit: (values) => {
-      const { username, password } = values;
-      login({
-        variables: { username, password },
-      });
+      const { email, password } = values;
+      signIn(email, password);
     },
     validationSchema: loginSchema,
     enableReinitialize: true,
@@ -67,12 +49,13 @@ const LoginForm = () => {
         <h1>Login</h1>
         <Input
           float
-          value={values.username}
+          value={values.email}
           onChange={handleChange}
-          placeholder="Username"
-          name="username"
+          placeholder="Email"
+          name="email"
           className="w-full mt-4"
           modifier="material"
+          type="email"
         />
         <Input
           float
@@ -85,8 +68,12 @@ const LoginForm = () => {
           modifier="material"
         />
         <div className="mt-6 w-full text-right">
-          <button disabled={loading} className="button w-full text-center" type="submit">
-            {loading ? 'Submitting...' : 'Submit'}
+          <button
+            disabled={signingIn}
+            className="button w-full text-center"
+            type="submit"
+          >
+            {signingIn ? 'Submitting...' : 'Submit'}
           </button>
         </div>
       </form>
