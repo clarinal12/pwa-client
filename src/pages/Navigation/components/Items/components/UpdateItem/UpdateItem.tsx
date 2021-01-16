@@ -1,12 +1,7 @@
 import React, { useState } from 'react';
 import { Page, Toolbar, BackButton, Fab, Icon } from 'react-onsenui';
 import ItemForm from 'components/ItemForm';
-import db from 'utils/idb';
-
-const updateItem = async (data: any) => {
-  const result = await db.table('items').put(data);
-  return result;
-};
+import useFirebase, { useFireStoreUpdate } from 'hooks/useFirebase';
 
 type Props = {
   navigator: any;
@@ -15,6 +10,8 @@ type Props = {
 };
 
 const UpdateItem: React.FC<Props> = ({ navigator, item, refetch }) => {
+  const { fireStore } = useFirebase();
+
   const [readOnly, setReadOnly] = useState(true);
 
   const pop = () => {
@@ -28,12 +25,21 @@ const UpdateItem: React.FC<Props> = ({ navigator, item, refetch }) => {
     pop();
   };
 
-  const submit = async (data: any) => {
-    const result = await updateItem({ ...data, id: item.id });
-
-    if (result) {
+  const [updateItem] = useFireStoreUpdate({
+    collection: 'items',
+    onCompleted: () => {
       handleSuccess();
-    }
+    },
+  });
+
+  const submit = async (data: any) => {
+    const { categories } = data;
+    updateItem(item.id, {
+      ...data,
+      categories: categories.map((id: string) =>
+        fireStore.doc('categories/' + id)
+      ),
+    });
   };
 
   const handleSetReadOnly = () => {

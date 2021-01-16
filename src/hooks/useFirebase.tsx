@@ -27,8 +27,23 @@ type FireStoreAddProps = {
   onError?: (error: any) => void;
 };
 
+type FireStoreUpdateProps = {
+  collection: string;
+  id?: string;
+  input?: {
+    [key: string]: any;
+  };
+  onCompleted?: (data: any) => void;
+  onError?: (error: any) => void;
+};
+
 type FireStoreAddReturn = [
-  (values: { [key: string]: any }) => void,
+  (values?: { [key: string]: any }) => void,
+  { loading: boolean; error: any }
+];
+
+type FireStoreUpdateReturn = [
+  (id?: string, values?: { [key: string]: any }) => void,
   { loading: boolean; error: any }
 ];
 
@@ -44,11 +59,17 @@ type FireStoreUploadReturn = [
   { loading: boolean; error: any }
 ];
 
-type FireStoreQueryProps = {
+export type Filter = [
+  string | firebase.firestore.FieldPath,
+  firebase.firestore.WhereFilterOp,
+  any
+];
+export interface FireStoreQueryProps {
   collection: string;
   onCompleted?: (data: any) => void;
   onError?: (error: any) => void;
-};
+  filter?: Filter;
+}
 
 export const useFireStoreAdd = ({
   collection,
@@ -71,7 +92,61 @@ export const useFireStoreAdd = ({
 
     fireStore
       .collection(collection)
-      .add(input || values)
+      .add({
+        ...(input || values),
+        created: firebase.firestore.FieldValue.serverTimestamp(),
+        updated: null,
+      })
+      .then((docRef: any) => {
+        setState({
+          loading: false,
+          error: false,
+        });
+        if (onCompleted) {
+          onCompleted(docRef);
+        }
+      })
+      .catch((error: any) => {
+        setState({
+          loading: false,
+          error: error,
+        });
+        if (onError) {
+          onError(error);
+        }
+      });
+  };
+
+  return [mutate, { loading, error }];
+};
+
+export const useFireStoreUpdate = ({
+  collection,
+  id,
+  input,
+  onCompleted,
+  onError,
+}: FireStoreUpdateProps): FireStoreUpdateReturn => {
+  const [state, setState] = useState({
+    loading: false,
+    error: undefined,
+  });
+
+  const { loading, error } = state;
+
+  const mutate = (newId?: string, values?: { [key: string]: any }) => {
+    setState((prev) => ({
+      ...prev,
+      loading: true,
+    }));
+
+    fireStore
+      .collection(collection)
+      .doc(id || newId)
+      .update({
+        ...(input || values),
+        updated: firebase.firestore.FieldValue.serverTimestamp(),
+      })
       .then((docRef: any) => {
         setState({
           loading: false,
@@ -99,6 +174,7 @@ export const useFireStoreQuery = ({
   collection,
   onCompleted,
   onError,
+  filter,
 }: FireStoreQueryProps) => {
   const [state, setState] = useState({
     loading: false,
@@ -114,9 +190,13 @@ export const useFireStoreQuery = ({
       loading: true,
     }));
 
-    fireStore
-      .collection(collection)
-      .get()
+    const collectionRef = fireStore.collection(collection);
+
+    const query = filter
+      ? collectionRef.where(filter[0], filter[1], filter[2]).get()
+      : collectionRef.get();
+
+    query
       .then((docRef: any) => {
         setState({
           loading: false,
@@ -165,7 +245,7 @@ export const useFireStoreUpload = ({
       ...prev,
       loading: true,
     }));
-    console.log({ path: values?.path || path });
+
     const storageRef = fireStorage.ref(
       `${values?.path || path}/${values?.file?.name || file?.name}`
     );

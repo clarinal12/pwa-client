@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Page,
   Toolbar,
@@ -9,24 +9,8 @@ import {
   ListItem,
 } from 'react-onsenui';
 import AddItem from './components/AddItem';
-import db from 'utils/idb';
 import UpdateItem from './components/UpdateItem';
-
-const queryItems = async () => {
-  const result = await db.table('items').toArray();
-
-  return result || null;
-};
-
-const queryCategories = async () => {
-  const result = await db.table('categories').toArray();
-
-  return result || null;
-};
-
-// const removeItem = async (edgesPath: string) => {
-//   await db.table('items').delete(edgesPath);
-// };
+import { useFireStoreQuery } from 'hooks/useFirebase';
 
 type Props = {
   title: string;
@@ -35,29 +19,27 @@ type Props = {
 
 const Items: React.FC<Props> = ({ title, navigator }) => {
   const [items, setItems] = useState([]);
-  const [categories, setCategories] = useState([]);
 
-  const fetchItems = async () => {
-    const result = await queryItems();
-    setItems(result);
-  };
-
-  const fetchCategories = async () => {
-    const result = await queryCategories();
-    setCategories(result);
-  };
-
-  useEffect(() => {
-    fetchItems();
-    fetchCategories();
-  }, []);
+  const { refetch } = useFireStoreQuery({
+    collection: 'items',
+    onCompleted: (data) => {
+      const entries = [] as any;
+      data.forEach((record: any) => {
+        entries.push({
+          id: record.id,
+          ...record.data(),
+        });
+      });
+      setItems(entries);
+    },
+  });
 
   const pushToAddItem = () => {
     navigator.pushPage({
       component: AddItem,
       props: {
         key: 'add-item',
-        refetch: fetchItems,
+        refetch,
       },
     });
   };
@@ -67,7 +49,7 @@ const Items: React.FC<Props> = ({ title, navigator }) => {
       component: UpdateItem,
       props: {
         key: 'update-item',
-        refetch: fetchItems,
+        refetch: refetch,
         item,
       },
     });
@@ -87,7 +69,7 @@ const Items: React.FC<Props> = ({ title, navigator }) => {
           </div>
         </Fab>
       )}
-      onShow={() => fetchItems()}
+      onShow={() => refetch()}
     >
       <div className="content w-full h-full p-5">
         <div className="mt-3">
@@ -103,9 +85,6 @@ const Items: React.FC<Props> = ({ title, navigator }) => {
             <List
               dataSource={items}
               renderRow={(row, index) => {
-                const newValue = categories.filter(
-                  (category) => category.id === row.category
-                )[0];
                 return (
                   <ListItem
                     onClick={() => pushToUpdateItem(row)}
@@ -117,13 +96,11 @@ const Items: React.FC<Props> = ({ title, navigator }) => {
                       <img
                         className="w-16 h-16"
                         alt="thumbnail"
-                        src="https://via.placeholder.com/100"
+                        src={row.image || 'https://via.placeholder.com/100'}
                       />
                     </div>
                     <div className="">
-                      <p>
-                        {row.name} - {newValue?.name}
-                      </p>
+                      <p>{row.name}</p>
                       <small>{row.code}</small>
                     </div>
                   </ListItem>

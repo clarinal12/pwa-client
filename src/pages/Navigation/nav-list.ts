@@ -1,7 +1,7 @@
 import Dashboard from './components/Dashboard';
 import Items from './components/Items';
 import Transactions from './components/Transactions';
-import Schedule from './components/Schedule';
+// import Schedule from './components/Schedule';
 
 
 export const tabSections = [
@@ -20,9 +20,9 @@ export const tabSections = [
     component: Transactions,
     icon: 'md-receipt',
   },
-  {
-    label: 'Schedule',
-    component: Schedule,
-    icon: 'md-calendar-note',
-  },
+  // {
+  //   label: 'Schedule',
+  //   component: Schedule,
+  //   icon: 'md-calendar-note',
+  // },
 ];

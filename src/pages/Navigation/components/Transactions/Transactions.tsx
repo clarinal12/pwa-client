@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import {
   Page,
   Toolbar,
@@ -9,16 +9,9 @@ import {
   ListItem,
 } from 'react-onsenui';
 import AddTransaction from './components/AddTransaction';
-import db from 'utils/idb';
 import UpdateTransaction from './components/UpdateTransaction';
 import { getTypeLabel } from 'constants/transactions';
 import { useFireStoreQuery } from 'hooks/useFirebase';
-
-const queryTransactions = async () => {
-  const result = await db.table('transactions').toArray();
-
-  return result || null;
-};
 
 const successColorTypes = ['CASH_IN', 'SALE'];
 const primaryColorTypes = ['PURCHASE'];
@@ -43,35 +36,43 @@ type Props = {
 
 const Transactions: React.FC<Props> = ({ title, navigator }) => {
   const [transactions, setTransactions] = useState([]);
-  const { data, loading, error } = useFireStoreQuery({
+
+  const { refetch } = useFireStoreQuery({
     collection: 'transactions',
+    onCompleted: (data) => {
+      const entries = [] as any;
+      data.forEach((record: any) => {
+        entries.push({
+          id: record.id,
+          ...record.data(),
+        });
+      });
+      setTransactions(entries);
+    },
   });
-
-  const fetchTransactions = async () => {
-    const result = await queryTransactions();
-    setTransactions(result);
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
 
   const pushToAddTransaction = () => {
     navigator.pushPage({
       component: AddTransaction,
       props: {
         key: 'add-transaction',
-        refetch: fetchTransactions,
+        refetch,
       },
     });
   };
 
-  const pushToUpdateTransaction = (transaction: object) => {
+  const pushToUpdateTransaction = (transaction: any) => {
+    const { item } = transaction;
     navigator.pushPage({
       component: UpdateTransaction,
       props: {
         key: 'update-transaction',
-        transaction,
+        transaction: {
+          ...transaction,
+          ...(item && {
+            item: item.id,
+          }),
+        },
       },
     });
   };
@@ -90,7 +91,7 @@ const Transactions: React.FC<Props> = ({ title, navigator }) => {
           </div>
         </Fab>
       )}
-      onShow={() => fetchTransactions()}
+      onShow={() => refetch()}
     >
       <div className="content w-full h-full p-5">
         <div className="mt-3">
@@ -122,11 +123,11 @@ const Transactions: React.FC<Props> = ({ title, navigator }) => {
                     </div>
                     <div className="">
                       <p>{getTypeLabel(row.type)}</p>
+                      <small>Petsa</small>
                     </div>
                     <div className="right">
                       <p>{row.price || row.amount}</p>
                     </div>
-                    <div className="expandable-content">Expandable content</div>
                   </ListItem>
                 );
               }}

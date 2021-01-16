@@ -27,7 +27,8 @@ const ItemForm: React.FC<Props> = ({
       defaultValues: {
         name: defaultValues?.name || '',
         code: defaultValues?.code || '',
-        categories: defaultValues?.categories || [],
+        categories:
+          defaultValues?.categories.map((category: any) => category.id) || [],
         price: defaultValues?.price || null,
         description: defaultValues?.description || null,
         quantity: defaultValues?.quantity || 0,
@@ -128,20 +129,22 @@ const ItemForm: React.FC<Props> = ({
         <Controller
           control={control}
           name="categories"
-          render={({ onChange, value }) => (
-            <div>
-              <CategorySelect
-                onChange={(value) => onChange(value)}
-                value={value}
-                disabled={readOnly}
-              />
-              {errors.categories && (
-                <small className="text-danger">
-                  {(errors.categories as any)?.message}
-                </small>
-              )}
-            </div>
-          )}
+          render={({ onChange, value }) => {
+            return (
+              <div>
+                <CategorySelect
+                  onChange={(value) => onChange(value)}
+                  value={value}
+                  disabled={readOnly}
+                />
+                {errors.categories && (
+                  <small className="text-danger">
+                    {(errors.categories as any)?.message}
+                  </small>
+                )}
+              </div>
+            );
+          }}
         />
         <Controller
           control={control}

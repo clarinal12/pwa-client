@@ -10,6 +10,7 @@ type Props = {
 
 const AddItem: React.FC<Props> = ({ navigator, refetch }) => {
   const { fireStore } = useFirebase();
+
   const pop = () => {
     if (refetch) {
       refetch();
@@ -23,7 +24,7 @@ const AddItem: React.FC<Props> = ({ navigator, refetch }) => {
 
   const [addItem] = useFireStoreAdd({
     collection: 'items',
-    onCompleted: (data: any) => {
+    onCompleted: () => {
       handleSuccess();
     },
   });

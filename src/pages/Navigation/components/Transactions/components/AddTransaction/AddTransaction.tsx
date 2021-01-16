@@ -1,42 +1,41 @@
 import React from 'react';
 import { Page, Toolbar, BackButton } from 'react-onsenui';
 import TransactionForm from 'components/TransactionForm';
-import db from 'utils/idb';
-import uuid from 'utils/uuid';
+import useFirebase, { useFireStoreAdd } from 'hooks/useFirebase';
 
-const updateItemQuantity = async (data: any) => {
-  const { item: id, quantity, type } = data
-  const table = await db.table('items')
-  const item = await table.get(id)
+// const updateItemQuantity = async (data: any) => {
+//   const { item: id, quantity, type } = data;
+//   const table = await db.table('items');
+//   const item = await table.get(id);
 
-  if (type === 'PURCHASE') {
-    await table.update(id, { quantity: item.quantity + Number(quantity) })
-  } else if (type === 'SALE') {
-    await table.update(id, { quantity: item.quantity - Number(quantity) })
-  }
-}
+//   if (type === 'PURCHASE') {
+//     await table.update(id, { quantity: item.quantity + Number(quantity) });
+//   } else if (type === 'SALE') {
+//     await table.update(id, { quantity: item.quantity - Number(quantity) });
+//   }
+// };
 
+// const addTransaction = async (data: any) => {
+//   const result = await db.table('transactions').add({
+//     id: uuid('transaction'),
+//     ...data,
+//   });
 
-const addTransaction = async (data: any) => {
-  const result = await db.table('transactions').add({
-    id: uuid('transaction'),
-    ...data
-  });
+//   if (data.type === 'PURCHASE' || data.type === 'SALE') {
+//     await updateItemQuantity(data);
+//   }
 
-  if (data.type === 'PURCHASE' || data.type === 'SALE') {
-    await updateItemQuantity(data)
-  }
-
-  return result;
-};
-
+//   return result;
+// };
 
 type Props = {
   navigator: any;
   refetch?: () => void;
-}
+};
 
 const AddTransaction: React.FC<Props> = ({ navigator, refetch }) => {
+  const { fireStore } = useFirebase();
+
   const pop = () => {
     if (refetch) {
       refetch();
@@ -48,13 +47,23 @@ const AddTransaction: React.FC<Props> = ({ navigator, refetch }) => {
     pop();
   };
 
-  const submit = async (data: any) => {
-    const result = await addTransaction(data)
+  const [addTransaction] = useFireStoreAdd({
+    collection: 'transactions',
+    onCompleted: () => {
+      handleSuccess();
+    },
+  });
 
-    if (result) {
-      handleSuccess()
-    }
-  }
+  const submit = async (data: any) => {
+    const { item } = data;
+
+    addTransaction({
+      ...data,
+      ...(item && {
+        item: fireStore.doc('items/' + item),
+      }),
+    });
+  };
 
   return (
     <Page

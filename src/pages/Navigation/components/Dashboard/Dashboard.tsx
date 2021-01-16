@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { Page, Toolbar, Card, Button } from 'react-onsenui';
 import AddTransaction from '../Transactions/components/AddTransaction';
 import AddItem from '../Items/components/AddItem';
-import db from 'utils/idb';
+import { useFireStoreQuery } from 'hooks/useFirebase';
 
 type Props = {
   title: string;
@@ -10,89 +10,74 @@ type Props = {
 };
 
 const addCashTypes = ['CASH_IN', 'SALE'];
-const subtractCashTypes = ['PURCHASE', 'EXPEND', 'CASH_OUT'];
 
-const queryTransactions = async () => {
-  const result = await db.table('transactions').toArray();
+const getReports = (transactions: any) => {
+  const reports = transactions.reduce(
+    (acc: any, transaction: any) => {
+      const { type, price, amount } = transaction;
+      const newAcc = { ...acc };
 
-  return result || null;
-};
-
-const getTotalSales = (transactions: any) => {
-  const totalSales = transactions.reduce((acc: number, transaction: any) => {
-    const { type, price } = transaction;
-    if (type === 'SALE') {
-      return acc + Number(price);
-    }
-    return acc;
-  }, 0);
-
-  return totalSales;
-};
-
-const getTotalCash = (transactions: any) => {
-  const totalSales = transactions.reduce((acc: number, transaction: any) => {
-    const { type, price, amount } = transaction;
-
-    if (addCashTypes.includes(type)) {
-      return acc + Number(price || amount);
-    }
-
-    if (subtractCashTypes.includes(type)) {
-      return acc - Number(price || amount);
-    }
-
-    return acc;
-  }, 0);
-
-  return totalSales;
-};
-
-const getTotalPurchases = (transactions: any) => {
-  const totalPurchases = transactions.reduce(
-    (acc: number, transaction: any) => {
-      const { type, price } = transaction;
-      if (type === 'PURCHASE') {
-        return acc + Number(price);
+      if (type === 'SALE') {
+        newAcc.totalSales += Number(price);
       }
-      return acc;
+
+      if (type === 'CASH_IN' || type === 'CASH_OUT') {
+        if (addCashTypes.includes(type)) {
+          newAcc.totalCash += Number(price || amount);
+        } else {
+          newAcc.totalCash -= Number(price || amount);
+        }
+      }
+
+      if (type === 'PURCHASE') {
+        newAcc.totalPurchase += Number(price);
+      }
+
+      if (type === 'EXPEND') {
+        newAcc.totalExpense += Number(amount);
+      }
+
+      return newAcc;
     },
-    0
+    {
+      totalSales: 0,
+      totalCash: 0,
+      totalPurchase: 0,
+      totalExpense: 0,
+    }
   );
 
-  return totalPurchases;
-};
-
-const getTotalExpenses = (transactions: any) => {
-  const totalExpenses = transactions.reduce((acc: number, transaction: any) => {
-    const { type, amount } = transaction;
-    if (type === 'EXPEND') {
-      return acc + Number(amount);
-    }
-    return acc;
-  }, 0);
-
-  return totalExpenses;
+  return reports;
 };
 
 const Dashboard: React.FC<Props> = ({ title, navigator }) => {
-  const [transactions, setTransactions] = useState([]);
+  const [reports, setReports] = useState({
+    totalSales: 0,
+    totalCash: 0,
+    totalPurchase: 0,
+    totalExpense: 0,
+  });
 
-  const fetchTransactions = async () => {
-    const result = await queryTransactions();
-    setTransactions(result);
-  };
-
-  useEffect(() => {
-    fetchTransactions();
-  }, []);
+  const { refetch } = useFireStoreQuery({
+    collection: 'transactions',
+    onCompleted: (data) => {
+      const entries = [] as any;
+      data.forEach((record: any) => {
+        entries.push({
+          id: record.id,
+          ...record.data(),
+        });
+      });
+      setReports(getReports(entries));
+    },
+  });
 
   const pushToAddTransaction = () => {
     navigator.pushPage({
       component: AddTransaction,
       props: {
         key: 'add-transaction',
-        refetch: fetchTransactions,
+        // refetch: fetchTransactions,
       },
     });
   };
@@ -113,7 +98,7 @@ const Dashboard: React.FC<Props> = ({ title, navigator }) => {
           <div className="center">{title}</div>
         </Toolbar>
       )}
-      onShow={() => fetchTransactions()}
+      onShow={() => refetch()}
     >
       <div className="content w-full h-full p-5">
         <div className="h-full flex flex-col justify-center">
@@ -121,7 +106,7 @@ const Dashboard: React.FC<Props> = ({ title, navigator }) => {
             <Card modifier="material">
               <div className="flex justify-between">
                 <div>Total Cash:</div>
-                <div className="text-primary">{getTotalCash(transactions)}</div>
+                <div className="text-primary">{reports.totalCash}</div>
               </div>
             </Card>
           </div>
@@ -129,9 +114,7 @@ const Dashboard: React.FC<Props> = ({ title, navigator }) => {
             <Card modifier="material">
               <div className="flex justify-between">
                 <div>Total Sales Amount:</div>
-                <div className="text-primary">
-                  {getTotalSales(transactions)}
-                </div>
+                <div className="text-primary">{reports.totalSales}</div>
               </div>
             </Card>
           </div>
@@ -139,9 +122,7 @@ const Dashboard: React.FC<Props> = ({ title, navigator }) => {
             <Card modifier="material">
               <div className="flex justify-between">
                 <div>Total Purchases Amount:</div>
-                <div className="text-primary">
-                  {getTotalPurchases(transactions)}
-                </div>
+                <div className="text-primary">{reports.totalPurchase}</div>
               </div>
             </Card>
           </div>
@@ -149,9 +130,7 @@ const Dashboard: React.FC<Props> = ({ title, navigator }) => {
             <Card modifier="material">
               <div className="flex justify-between">
                 <div>Total Expenses:</div>
-                <div className="text-primary">
-                  {getTotalExpenses(transactions)}
-                </div>
+                <div className="text-primary">{reports.totalExpense}</div>
               </div>
             </Card>
           </div>

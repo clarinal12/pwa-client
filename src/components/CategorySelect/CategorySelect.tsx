@@ -141,23 +141,21 @@ const CategorySelect: React.FC<Props> = ({ value, onChange, disabled }) => {
             </div>
             <div className="mt-5">
               {categories.length ? (
-                <List
-                  dataSource={categories}
-                  renderRow={(row, index) => {
-                    return (
-                      <ListItem key={index} modifier="longdivider">
-                        <StyledCheckbox
-                          onChange={(e: any) => {
-                            handleSelect(row.id, e.target.checked);
-                          }}
-                          modifier="noborder"
-                        >
-                          {row.name}
-                        </StyledCheckbox>
-                      </ListItem>
-                    );
-                  }}
-                />
+                <List>
+                  {categories.map((category) => (
+                    <ListItem key={category.id} modifier="longdivider">
+                      <StyledCheckbox
+                        checked={value.includes(category.id)}
+                        onChange={(e: any) => {
+                          handleSelect(category.id, e.target.checked);
+                        }}
+                        modifier="noborder"
+                      >
+                        {category.name}
+                      </StyledCheckbox>
+                    </ListItem>
+                  ))}
+                </List>
               ) : (
                 <div className="text-center mt-10">Empty</div>
               )}

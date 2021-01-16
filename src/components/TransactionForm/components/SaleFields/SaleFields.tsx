@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import ItemSelect from 'components/ItemSelect'
-import { Input } from 'react-onsenui'
-import styled from 'styled-components'
+import ItemSelect from 'components/ItemSelect';
+import { Input } from 'react-onsenui';
+import styled from 'styled-components';
 import { Controller } from 'react-hook-form';
 
 const StyledInput = styled(Input)`
@@ -9,36 +9,33 @@ const StyledInput = styled(Input)`
     text-align: right !important;
     width: 100px;
   }
-`
+`;
 const StyledTextArea = styled.textarea`
   width: 100%;
-`
+`;
 
 type Props = {
   useFormValues: any;
   readOnly?: boolean;
-}
-
-const itemsFilterFunction = (value: any) => value.price !== null
-
+};
 
 const SaleFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
-  const { control, setValue, getValues } = useFormValues
-  const [activeItem, setActiveItem] = useState(null)
+  const { control, setValue, getValues } = useFormValues;
+  const [activeItem, setActiveItem] = useState(null);
 
   const getPrice = (quantity: string | number) => {
     if (activeItem && quantity) {
-      setValue('price', Number(activeItem.price) * Number(quantity))
+      setValue('price', Number(activeItem.price) * Number(quantity));
     } else {
-      setValue('price', '')
+      setValue('price', '');
     }
-  }
+  };
 
   useEffect(() => {
-    const quantity = getValues('quantity')
-    getPrice(quantity)
+    const quantity = getValues('quantity');
+    getPrice(quantity);
     // eslint-disable-next-line
-  }, [activeItem])
+  }, [activeItem]);
 
   return (
     <div>
@@ -48,10 +45,12 @@ const SaleFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
           control={control}
           name="item"
           render={({ onChange, value }) => (
-            <ItemSelect filterFunction={itemsFilterFunction} value={value}
-              onChange={value => {
-                onChange(value.id)
-                setActiveItem(value)
+            <ItemSelect
+              filter={['price', '!=', null]}
+              value={value}
+              onChange={(value) => {
+                onChange(value.id);
+                setActiveItem(value);
               }}
               disabled={readOnly}
             />
@@ -60,9 +59,7 @@ const SaleFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
       </div>
 
       <div className="flex justify-between mb-3">
-        <div>
-          Quantity:
-        </div>
+        <div>Quantity:</div>
         <Controller
           control={control}
           name="quantity"
@@ -73,9 +70,9 @@ const SaleFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
               placeholder="0"
               modifier="underbar"
               name={name}
-              onChange={e => {
-                onChange(e)
-                getPrice(e.target.value)
+              onChange={(e) => {
+                onChange(e);
+                getPrice(e.target.value);
               }}
               value={value}
               disabled={readOnly}
@@ -85,9 +82,7 @@ const SaleFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
       </div>
 
       <div className="flex justify-between mb-3">
-        <div>
-          Price:
-        </div>
+        <div>Price:</div>
         <Controller
           control={control}
           name="price"
@@ -107,9 +102,7 @@ const SaleFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
       </div>
 
       <div className="flex justify-between mb-3">
-        <div>
-          Discount (%):
-        </div>
+        <div>Discount (%):</div>
         <Controller
           control={control}
           name="discount"
@@ -129,9 +122,7 @@ const SaleFields: React.FC<Props> = ({ useFormValues, readOnly }) => {
       </div>
 
       <div className="mb-3">
-        <div className="mb-1">
-          Note:
-        </div>
+        <div className="mb-1">Note:</div>
         <Controller
           control={control}
           name="note"

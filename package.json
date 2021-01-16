@@ -30,6 +30,8 @@
     "debounce": "^1.2.0",
     "dexie": "^3.0.2",
     "firebase": "^8.2.1",
+    "firebase-admin": "^9.4.2",
+    "firebase-functions": "^3.13.1",
     "formik": "^2.1.4",
     "graphql": "^14.6.0",
     "graphql-tag": "^2.10.3",
@@ -41,7 +43,7 @@
     "react-dropzone": "^11.2.4",
     "react-hook-form": "^6.9.6",
     "react-onsenui": "^1.11.2",
-    "react-scripts": "3.4.1",
+    "react-scripts": "^3.4.4",
     "styled-components": "^5.2.1",
     "typescript": "~3.7.2",
     "yup": "^0.28.1"
